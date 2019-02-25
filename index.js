@@ -6,27 +6,43 @@ const app = express();
 
 const schema = gql`
   type Query {
-    Student: Student,
-    students: [Student!]!
+    student(id: ID!): Student,
+    students: [Student!]!,
+    course(id: ID!): Course,
+    courses: [Course!]!,
+    grade(id: ID!): Grade,
+    grades: [Grade!]!,
   }
 
+  type Course {
+        id: ID!,
+        name: String,
+        description: String
+      }
+    type Grade {
+        id: ID!,
+        studentid: ID,
+        courseid: ID,
+        grade: String
+    }
 
   type Student {
     id: ID!,
-    name: String!,
-    email: String!,
-    Street: String!,
-    PostCode: String!,
-    Country: String!,
-    firstName: String!,
-    familyName: String!,
+    email: String,
+    Street: String,
+    PostCode: String,
+    Country: String,
+    firstName: String,
+    familyName: String,
     birthday: String,
   }
   `;
 
+  
+
   let students = [
   {
-    id: "1",
+    id: "011",
     email: "jhon.sina@students.oamk.fi",
     firstName: "Jhon",
     familyName: "Sina",
@@ -36,7 +52,7 @@ const schema = gql`
     birthday: "10-12-1997",
   },
   {
-    id: "2",
+    id: "022",
     email: "Fore.Ian@students.oamk.fi",
     firstName: "Fore",
     familyName: "Ian",
@@ -46,7 +62,7 @@ const schema = gql`
     birthday: "07-09-1996",
   },
   {
-  id: "3",
+  id: "033",
   email: "Barbara.Okely@students.oamk.fi",
   firstName: "Barbara",
   familyName: "Okely",
@@ -56,7 +72,7 @@ const schema = gql`
   birthday: "01-03-1995",
 },
 {
-  id: "4",
+  id: "044",
   email: "Scott.Peak@students.oamk.fi",
   firstName: "Scott",
   familyName: "Peak",
@@ -68,15 +84,75 @@ const schema = gql`
 
 ];
 
-const resolvers = {
-  Query: {
-    Student: (parent, args, context, info) => {
-      return students[0];
+
+
+let courses = [
+    {
+        id: 01,
+        name: "ICT",
+        description: "Basics Of Information Of Technology"
+    },
+    {
+        id: 02,
+        name: "Android Development",
+        description: "Basics Of Android Development"
+    },
+    {
+        id: 03,
+        name: "Java",
+        description: "Intermidate of Object Orientened Programming"
+    }
+];
+
+
+let grades = [
+  {
+      id: 001,
+      studentid: 1,
+      courseid: 02,
+      grade: "5",
+  },
+  {
+      id: 002,
+      studentid: 1,
+      courseid: 02,
+      grade: "5.5",
+  },
+  {
+      id: 003,
+      studentid: 4,
+      courseid: 01,
+      grade: "3.5",
+  }
+];
+
+
+
+const resolvers = 
+{
+  Query: 
+  {
+    student: (parent, args, context, info) => {
+      return students.find(i => i.id === +args.id);
     },
     students: (parents, args, context, info) => {
       return students;
-    }
+    },
+    course: (parent, args, context, info) => {
+      return courses.find(c => c.id === +args.id)
+  },
+  courses: (parents, args, context, info) => {
+      return courses;
+  },
+
+  grade: (parents, args, context, info) => {
+    return grades.find(g => g.id === +args.id);
+
+ },
+ grades: (parent, args, context, info) => {
+    return grades;
   }
+}
 };
 
 
