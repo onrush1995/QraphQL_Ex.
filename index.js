@@ -5,6 +5,8 @@ const { ApolloServer, gql } = require('apollo-server-express');
 const app = express();
 
 const schema = gql`
+
+
   type Query {
     student(id: ID!): Student,
     students: [Student!]!,
@@ -12,12 +14,16 @@ const schema = gql`
     courses: [Course!]!,
     grade(id: ID!): Grade,
     grades: [Grade!]!,
+    gradesByStudent(studentid: ID!): [Grade!]!,
+    gradesByCourse(courseid: ID!): [Grade!]!
+   
   }
 
   type Course {
         id: ID!,
         name: String,
-        description: String
+        description: String,
+        teacherName:String
       }
     type Grade {
         id: ID!,
@@ -29,99 +35,93 @@ const schema = gql`
   type Student {
     id: ID!,
     email: String,
-    Street: String,
-    PostCode: String,
-    Country: String,
+    studentGroupId:String,
     firstName: String,
     familyName: String,
     birthday: String,
   }
   `;
 
-  
+let s = 1;
 
   let students = [
   {
-    id: "011",
+    id: s++,
     email: "jhon.sina@students.oamk.fi",
     firstName: "Jhon",
     familyName: "Sina",
-    Street: "Kotkantie 1",
-    PostCode: "90250",
-    Country: "Finland",
+    studentGroupId:"Din18sp",
     birthday: "10-12-1997",
   },
   {
-    id: "022",
+    id: s++,
     email: "Fore.Ian@students.oamk.fi",
     firstName: "Fore",
     familyName: "Ian",
-    Street: "Oxford Street 79",
-    PostCode: "90118",
-    Country: "England",
+    studentGroupId:"Din17sp",
     birthday: "07-09-1996",
   },
   {
-  id: "033",
+  id: s++,
   email: "Barbara.Okely@students.oamk.fi",
+  studentGroupId:"Din16sp",
   firstName: "Barbara",
   familyName: "Okely",
-  Street: "Washington street 092",
-  PostCode: "30701",
-  Country: "USA",
   birthday: "01-03-1995",
 },
 {
-  id: "044",
+  id: s++,
   email: "Scott.Peak@students.oamk.fi",
   firstName: "Scott",
   familyName: "Peak",
-  Street: "Kajaaninte 34",
-  PostCode: "90130",
-  Country: "Finland",
+  studentGroupId:"Din17sp",
   birthday: "06-07-1994",
 },
 
 ];
 
-
+let c = 1;
 
 let courses = [
     {
-        id: 01,
+        id: c++,
         name: "ICT",
-        description: "Basics Of Information Of Technology"
+        description: "Basics Of Information Of Technology",
+        teacherName:"Lasse"
     },
     {
-        id: 02,
+        id: c++,
         name: "Android Development",
-        description: "Basics Of Android Development"
+        description: "Basics Of Android Development",
+        teacherName:"Temmu"
     },
     {
-        id: 03,
+        id: c++,
         name: "Java",
-        description: "Intermidate of Object Orientened Programming"
+        description: "Intermidate of Object Orientened Programming",
+        teacherName:"Kari"
     }
 ];
 
+let g = 1;
 
 let grades = [
   {
-      id: 001,
+      id: g++,
       studentid: 1,
-      courseid: 02,
+      courseid: 2,
       grade: "5",
   },
   {
-      id: 002,
+      id: g++,
       studentid: 1,
-      courseid: 02,
+      courseid: 2,
       grade: "5.5",
   },
   {
-      id: 003,
+      id:g++,
       studentid: 4,
-      courseid: 01,
+      courseid: 1,
       grade: "3.5",
   }
 ];
@@ -151,6 +151,16 @@ const resolvers =
  },
  grades: (parent, args, context, info) => {
     return grades;
+  },
+  gradesByStudent: (parent, args, context, info) => {
+    if (args.studentid) {
+        return grades.filter(g => g.studentid === +args.studentid);
+    }
+  },
+  gradesByCourse: (parent, args, context, info) => {
+    if (args.courseid) {
+        return grades.filter(g => g.courseid === +args.courseid);
+    }
   }
 }
 };
