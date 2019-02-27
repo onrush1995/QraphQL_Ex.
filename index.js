@@ -78,6 +78,13 @@ const schema = gql`
         description: String,
         teacherName:String
   ):Response200!
+
+  updateGrade(
+      id: ID!,
+      studentid: ID,
+      courseid: ID,
+      grade: String,
+      ):Response200!
 }
   
         type Response200 {
@@ -274,6 +281,19 @@ Mutation: {
     }
     return {success: false}
 },
+
+updateGrade: (parent, args, context, info) => {
+  if (args.id) {
+      const grade = grades.find(g => g.id === +args.id);
+      if (grade) {
+          grade.studentid = args.studentid ? args.studentid : grade.studentid;
+          grade.courseid = args.courseid ? args.courseid : grade.courseid;
+          grade.grade = args.grade ? args.grade : grade.grade;
+          return {success: true}
+      }
+  }
+  return {success: false}
+}
 
  }
 };
