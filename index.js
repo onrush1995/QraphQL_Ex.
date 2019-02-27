@@ -6,7 +6,6 @@ const app = express();
 
 const schema = gql`
 
-
   type Query {
     student(id: ID!): Student,
     students: [Student!]!,
@@ -18,6 +17,8 @@ const schema = gql`
     gradesByCourse(courseid: ID!): [Grade!]!
    
   }
+
+
 
   type Course {
         id: ID!,
@@ -31,7 +32,6 @@ const schema = gql`
         courseid: ID,
         grade: String
     }
-
   type Student {
     id: ID!,
     email: String,
@@ -40,6 +40,22 @@ const schema = gql`
     familyName: String,
     birthday: String,
   }
+  type Mutation {
+        createStudent (
+        
+            email: String,
+            studentGroupId:String,
+            firstName: String,
+            familyName: String,
+            birthday: String
+            
+        ) : Response200!
+  }
+        type Response200  {
+        success: Boolean!
+    }
+
+
   `;
 
 let s = 1;
@@ -164,6 +180,24 @@ const resolvers =
   }
 }
 };
+
+Mutation: {
+  createStudent: (parent, args, context, info) => {
+      const student = {
+          id: ((students.length) + 1).toString(),
+          firstName: args.firstName,
+          familyName: args.familyName,
+          studentGroupId:args.studentGroupId,
+          email: args.email,
+          birthday:args.birthday
+          };
+      students.push(student);
+      return {success: true};
+  }
+}
+
+
+
 
 
 
