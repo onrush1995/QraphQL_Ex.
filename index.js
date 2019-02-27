@@ -190,9 +190,8 @@ const resolvers =
         return grades.filter(g => g.courseid === +args.courseid);
     }
   }
-}
-};
-//end of queries function
+},
+
 
 Mutation: {
   createStudent: (parent, args, context, info) => {
@@ -206,7 +205,7 @@ Mutation: {
           };
       students.push(student);
       return {success: true};
-  }
+  },
   createCourse: (parent,args,context, info)=>{
     const course={
       id:((courses.length)+1).toString(),
@@ -217,7 +216,7 @@ Mutation: {
     courses.push(course);
     return{success:true};
 
-  }
+  },
   createGrade: (parent, args, context, info) => {
     const grade = {
         id: ((grades.length) + 1),
@@ -228,6 +227,7 @@ Mutation: {
     grades.push(grade);
     return {success: true}
   }
+ }
 };
 
 
