@@ -49,21 +49,38 @@ const schema = gql`
             familyName: String,
             birthday: String
             
-        ) : ItemCreatedResponse!
+        ) :Response200
         
         createCourse(
           name: String,
           description: String,
           teacherName:String
-        ):ItemCreatedResponse
+        ):Response200
 
         createGrade (
             studentid: ID,
             courseid: ID,
             grade: String
-        ) : ItemCreatedResponse!
-  }
-        type ItemCreatedResponse {
+        ) :Response200
+
+        updateStudent(
+            id: ID!,
+            email: String,
+            studentGroupId:String,
+            firstName: String,
+            familyName: String,
+            birthday: String):Response200!
+  
+
+  updateCourse(
+        id: ID!,
+        name: String,
+        description: String,
+        teacherName:String
+  ):Response200!
+}
+  
+        type Response200 {
         success: Boolean!
     }
 
@@ -226,7 +243,38 @@ Mutation: {
     };
     grades.push(grade);
     return {success: true}
-  }
+  },
+
+  updateStudent: (parent, args, context, info) => {
+    if (args.id) {
+      const student = students.find(s => s.id === +args.id);
+      if (student) {
+        student.firstName = args.firstName ? args.firstName : student.firstName;
+        student.lastName = args.lastName ? args.lastName : student.lastName;
+        student.email = args.email ? args.email : student.email;
+        student.studentGroupId = args.studentGroupId ? args.studentGroupId  : student.studentGroupId;
+        student.birthday = args.birthday ? args.birthday : student.birthday;
+        
+        return { success: true };
+      }
+    }
+    return { success: false }
+  },
+
+  updateCourse: (parent, args, context, info) => {
+    if (args.id) {
+        const course = courses.find(c => c.id === +args.id);
+        if (course) {
+            course.name = args.name ? args.name : course.name;
+            course.description = args.description ? args.description : course.description;
+            course.teacherName = args.teacherName ? args.teacherName : course.teacherName;
+
+            return {success: true};
+        }
+    }
+    return {success: false}
+},
+
  }
 };
 
