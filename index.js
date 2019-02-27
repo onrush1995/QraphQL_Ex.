@@ -49,9 +49,21 @@ const schema = gql`
             familyName: String,
             birthday: String
             
-        ) : Response200!
+        ) : ItemCreatedResponse!
+        
+        createCourse(
+          name: String,
+          description: String,
+          teacherName:String
+        ):ItemCreatedResponse
+
+        createGrade (
+            studentid: ID,
+            courseid: ID,
+            grade: String
+        ) : ItemCreatedResponse!
   }
-        type Response200  {
+        type ItemCreatedResponse {
         success: Boolean!
     }
 
@@ -180,6 +192,7 @@ const resolvers =
   }
 }
 };
+//end of queries function
 
 Mutation: {
   createStudent: (parent, args, context, info) => {
@@ -194,7 +207,28 @@ Mutation: {
       students.push(student);
       return {success: true};
   }
-}
+  createCourse: (parent,args,context, info)=>{
+    const course={
+      id:((courses.length)+1).toString(),
+      name:args.name,
+      description:args.description,
+      teacherName:args.teacherName
+    };
+    courses.push(course);
+    return{success:true};
+
+  }
+  createGrade: (parent, args, context, info) => {
+    const grade = {
+        id: ((grades.length) + 1),
+        studentid: args.studentid,
+        courseid: args.courseid,
+        grade: args.grade
+    };
+    grades.push(grade);
+    return {success: true}
+  }
+};
 
 
 
